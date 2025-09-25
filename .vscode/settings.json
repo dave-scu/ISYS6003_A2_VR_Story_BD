@@ -51,5 +51,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "VR_Story.sln"
+    "dotnet.defaultSolution": "ISYS6003_A2_VR_Story_BD.sln"
 }
