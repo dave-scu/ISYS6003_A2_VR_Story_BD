@@ -74,21 +74,43 @@ public class MenuController : MonoBehaviour {
     [SerializeField, HideInInspector]
     public GameObject exitMenu;
 
-    //Options menu
-    [SerializeField, HideInInspector]
-    public GameObject OptionsMenu;
+    // -----------------------------------------------------
+    // NEW FUNCTION DEFINED HERE SO IT'S AVAILABLE IN START()
+    // -----------------------------------------------------
+    private void ForceMenuSetup()
+    {
+        // 1. Force Options Array to SIZE 2 and set text (Overrides Inspector)
+        options = new string[2];
+        options[0] = "Select Scene"; // Index 0
+        options[1] = "Exit Game";    // Index 1
+        
+        // 2. Force Events Array to SIZE 2 and link the correct functions (THE FIX!)
+        Events = new UnityEvent[2];
+        
+        // Element 0: "Select Scene" -> Calls the selectScene function
+        Events[0] = new UnityEvent();
+        Events[0].AddListener(selectScene);
 
-
+        // Element 1: "Exit Game" -> Calls the exitMenuOpen function
+        Events[1] = new UnityEvent();
+        Events[1].AddListener(exitMenuOpen);
+    }
+    // -----------------------------------------------------
+    
     void Start()
     {
         Audio = gameObject.GetComponent<AudioSource>();
         instance = this;
-        //Set the activeBackground array length
+        
+        // CALL THE SETUP FUNCTION
+        ForceMenuSetup(); 
+        
+        //Set the activeBackground array length based on the original array sizes (4)
         if (useParallax) { activeBackground = new GameObject[backgroundsParallax.Length]; } else { activeBackground = new GameObject[backgrounds.Length]; }
         initiate();      
     }
 
-	void Update () {
+    void Update () {
 
         if (mainMenu) { 
         //Changes the text corresponding option
@@ -221,13 +243,6 @@ public class MenuController : MonoBehaviour {
         }
     }
     
-    //New Game event
-    public void newGame()
-    {
-        //Loads the first scene, change the number to your desired scene
-        SceneManager.LoadScene(1);
-    }
-
     //Continue
     public void continueGame()
     {
@@ -363,13 +378,6 @@ public class MenuController : MonoBehaviour {
         mainMenu = false;
     }
 
-    //Closes the exit menu
-    public void exitMenuClose()
-    {
-        var animEx = exitMenu.GetComponent<Animation>();
-        animEx.Play("Fade out");
-        mainMenu = true;
-    }
 
     //Exit Game
     public void exitGame()
@@ -377,20 +385,4 @@ public class MenuController : MonoBehaviour {
         Application.Quit();
     }
 
-    //Open Options
-    public void openOptions()
-    {
-        OptionsMenu.gameObject.GetComponent<Animation>().Play("Fade In");
-        mainMenu = false;
-        OptionsMenu.transform.SetAsLastSibling();
-    }
-
-    //Close Options
-    public void closeOptions()
-    {
-        OptionsMenu.gameObject.GetComponent<Animation>().Play("Fade out");
-        mainMenu = true;
-    }
-
-}
-
+} // <--- Final closing brace for the class
