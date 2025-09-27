@@ -79,9 +79,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Scene 3
-
-'
+  m_Text: Mountain
 --- !u!114 &11430710
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -164,7 +162,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 25c04dea564d2d5428ecc32271573d84, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 417b17cbcb8da4476a22312ac7e5d87c, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

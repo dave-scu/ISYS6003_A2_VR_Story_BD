@@ -67,7 +67,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 72a92735a927cd143838d3820ae25f4e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e5ba0f0ea8c934a0794cfa47bb2b72ff, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -169,7 +169,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Scene 2
+  m_Text: Beach
 --- !u!114 &11460690
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -340,7 +340,7 @@ PrefabInstance:
     - target: {fileID: 11427428, guid: 6f40747fa9c2b6b439dfbb5d6b8ed66a, type: 3}
       propertyPath: mainBackground
       value: 
-      objectReference: {fileID: 127112, guid: 8ddb9b2166de43d4d85c46d920c4cc95, type: 3}
+      objectReference: {fileID: 123392, guid: 52005b25791146745ac91432f3a7979e, type: 3}
     - target: {fileID: 11427428, guid: 6f40747fa9c2b6b439dfbb5d6b8ed66a, type: 3}
       propertyPath: options.Array.size
       value: 2
@@ -405,6 +405,18 @@ PrefabInstance:
       propertyPath: fullscreenToggle
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 11475804, guid: 6f40747fa9c2b6b439dfbb5d6b8ed66a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 728684883}
+    - target: {fileID: 11475804, guid: 6f40747fa9c2b6b439dfbb5d6b8ed66a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 11486852, guid: 6f40747fa9c2b6b439dfbb5d6b8ed66a, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 728684883}
     - target: {fileID: 22343376, guid: 6f40747fa9c2b6b439dfbb5d6b8ed66a, type: 3}
       propertyPath: m_Camera
       value: 
@@ -521,6 +533,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6f40747fa9c2b6b439dfbb5d6b8ed66a, type: 3}
+--- !u!1 &728684883 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 193312, guid: 6f40747fa9c2b6b439dfbb5d6b8ed66a,
+    type: 3}
+  m_PrefabInstance: {fileID: 728684882}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1997479389
 GameObject:
   m_ObjectHideFlags: 0
