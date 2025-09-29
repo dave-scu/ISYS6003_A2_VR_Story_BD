@@ -1,417 +1,166 @@
 ﻿using UnityEngine;
-using System.Collections;
-using UnityEngine.UI;
-using System.Collections.Generic;
-using UnityEngine.Events;
-using System.IO;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using System.Collections;
 
 public class MenuController : MonoBehaviour
 {
-
-    public static MenuController instance;
-
-    //Active option and bool to check if main menu is active
-    private int option = 0;
-    private bool mainMenu = true;
-
-    //Check to move the menu using the keys or only the arrows
-    [SerializeField, Tooltip("Check to move the menu using the keys or only the arrows")]
-    public bool useKeys = true;
-
-    //Check if using parallax or not
-    public bool useParallax = true;
-
-    //Scenes animation
-    private bool isAnimating = false;
-    private int activeScene = 1;
-    [SerializeField, Tooltip("Animation speed in seconds")]
-    public float animSpeed;
-
-    //Option quantity
-    [SerializeField, Tooltip("Introduce all the options in your menu")]
-    public string[] options;
-
-    //Backgrounds
-    [SerializeField, Tooltip("Introduce all the backgrounds for the scenes in your menu")]
-    public GameObject[] backgrounds;
-    [SerializeField, Tooltip("Introduce all the backgrounds for the scenes in your menu")]
-    public GameObject[] backgroundsParallax;
-    [SerializeField, Tooltip("Introduce the main bck for your menu")]
-    public GameObject mainBackgroundParallax;
-    [SerializeField, Tooltip("Introduce the main bck for your menu")]
-    public GameObject mainBackground;
-    [SerializeField, HideInInspector]
+    // --- INSPECTOR ASSIGNMENTS ---
     public Text menuText;
-    [SerializeField]
-    public GameObject[] activeBackground;
+    public AudioClip selectClip;
+    public AudioClip sceneSelectClip;
+    // CRITICAL: Must be linked in the Inspector!
+    public Canvas menuCanvas; 
 
-    //Arrow Animators
-    [SerializeField, HideInInspector]
-    public Animator ArrowR;
-    [SerializeField, HideInInspector]
-    public Animator ArrowL;
+    // --- CONFIGURATION ---
+    private const float SceneCycleDelay = 5.0f; // Time in seconds between automatic scene changes
 
-    //Menu bar gameobject
-    [SerializeField, HideInInspector]
-    public GameObject menuBar;
+    // --- PRIVATE VARIABLES ---
+    private AudioSource audioSource;
+    private int option = 0;
+    private readonly string[] options = { "Select Scene", "Exit" };
 
-    //Backgrounds Controller
-    [SerializeField, HideInInspector]
-    public GameObject backgroundsController;
+    private readonly string[] cycleScenes = { "BeachScene", "MountainScene", "ForestScene" };
 
-    //Sounds
-    [Header("Sounds")]
-    [Space(10)]
-    public AudioClip Select;
-    public AudioClip SceneSelect;
-    private AudioSource Audio;
+    private const string WaterfallSceneName = "WaterfallScene";
+    private const string MenuSceneName = "Main Menu Demo"; 
 
-    //Events
-    [SerializeField, HideInInspector]
-    public UnityEvent[] Events;
-
-    //Exit Menu
-    [SerializeField, HideInInspector]
-    public GameObject exitMenu;
-
-    // -----------------------------------------------------
-    // NEW FUNCTION DEFINED HERE SO IT'S AVAILABLE IN START()
-    // -----------------------------------------------------
-    private void ForceMenuSetup()
-    {
-        // 1. Force Options Array to SIZE 2 and set text (Overrides Inspector)
-        options = new string[2];
-        options[0] = "Select Scene"; // Index 0
-        options[1] = "Exit Game";    // Index 1
-
-        // 2. Force Events Array to SIZE 2 and link the correct functions (THE FIX!)
-        Events = new UnityEvent[2];
-
-        // Element 0: "Select Scene" -> Calls the selectScene function
-        Events[0] = new UnityEvent();
-        Events[0].AddListener(selectScene);
-
-        // Element 1: "Exit Game" -> Calls the exitMenuOpen function
-        Events[1] = new UnityEvent();
-        Events[1].AddListener(exitMenuOpen);
-    }
-    // -----------------------------------------------------
+    private int currentCycleIndex = 0;
 
     void Start()
     {
-        Audio = gameObject.GetComponent<AudioSource>();
-        instance = this;
+        // PREVENTS THIS CONTROLLER FROM BEING DESTROYED WHEN SCENES LOAD
+        DontDestroyOnLoad(this.gameObject); 
 
-        // CALL THE SETUP FUNCTION
-        ForceMenuSetup();
+        // CRITICAL: Subscribe to the scene loaded event
+        SceneManager.sceneLoaded += OnSceneLoaded;
 
-        //Set the activeBackground array length based on the original array sizes (4)
-        if (useParallax) { activeBackground = new GameObject[backgroundsParallax.Length]; } else { activeBackground = new GameObject[backgrounds.Length]; }
-        initiate();
+        // 1. Get the AudioSource component
+        audioSource = GetComponent<AudioSource>();
+        
+        // 2. Set initial menu text
+        if (menuText != null)
+        {
+            menuText.text = options[option];
+        }
+    }
+    
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // If we are NOT in the Main Menu (i.e., we are in a game scene)
+        if (scene.name != MenuSceneName)
+        {
+            // Stop any potentially running timer and start the new one for this scene
+            StopAllCoroutines(); 
+            
+            // The GameObject is now guaranteed to be active, so we can start the coroutine.
+            StartCoroutine(AutoCycleScenes(SceneCycleDelay));
+        }
+        else
+        {
+            // If we are back at the Main Menu, re-enable the UI
+            StopAllCoroutines();
+            if (menuCanvas != null) menuCanvas.enabled = true; // SHOWS THE MENU UI
+        }
+    }
+    
     void Update()
     {
-
-        if (mainMenu)
+        // This runs continuously, but the UI is only visible when menuCanvas.enabled = true.
+        
+        if (menuText != null)
         {
-            //Changes the text corresponding option
             menuText.text = options[option];
-
-            //Deactivate arrows
-            //If the option is less than 1 left arrow deactivated
-            if (option < 1)
-            {
-                ArrowL.SetBool("Deactivate", true);
-            }
-            else
-            {
-                ArrowL.SetBool("Deactivate", false);
-            }
-
-            //If the option is the last option deactivate right arrow
-            if (option == options.Length - 1)
-            {
-                ArrowR.SetBool("Deactivate", true);
-            }
-            else
-            {
-                ArrowR.SetBool("Deactivate", false);
-            }
-
-            //If use keys is active move with the keys pressed
-            if (useKeys)
-            {
-                if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
-                {
-                    moveRight();
-                }
-
-                if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
-                {
-                    moveLeft();
-                }
-
-                //If enter is pressed reproduce the corresponding event
-                if (Input.GetKeyDown(KeyCode.Return))
-                {
-                    pressEnter();
-                }
-            }
         }
 
-        //Check is the scenes are animating and puts the variable in true or false
-        var anim = backgroundsController.GetComponent<Animation>();
-        if (anim.isPlaying)
-        {
-            isAnimating = true;
-        }
-        else
-        {
-            isAnimating = false;
-        }
-
-
+        if (Input.GetKeyDown(KeyCode.RightArrow)) { MoveRight(); }
+        if (Input.GetKeyDown(KeyCode.LeftArrow)) { MoveLeft(); }
+        if (Input.GetKeyDown(KeyCode.Return)) { ExecuteCurrentOption(); }
     }
 
-    //Initiate
-    private void initiate()
+    // =======================================================
+    // --- UI BUTTON FUNCTIONS (etc.) ---
+    // =======================================================
+
+    public void UIMoveRight() { MoveRight(); }
+    public void UIMoveLeft() { MoveLeft(); }
+    public void UIPressEnter() { ExecuteCurrentOption(); }
+
+    private void ExecuteCurrentOption()
     {
-        //If use parallax is active then instantiate the parallax main bck
-        //Else instantiate the normal background
-        mainMenu = true;
-        menuBar.SetActive(true);
-        if (useParallax)
+        if (option == 0)
         {
-            //Instantiate the background an set the parent to this gameobject
-            //Then reset the scale and position
-            //Set the sibling to first so the background is visible
-            //Then adjust the rect values
-            //And lastly set the active background array position 0 to this background
-            var Bck = Instantiate(mainBackgroundParallax) as GameObject;
-            Bck.transform.SetParent(this.gameObject.transform);
-            Bck.transform.localScale = new Vector3(1, 1, 1);
-            Bck.transform.localPosition = new Vector3(0, 0, 0);
-            Bck.transform.SetSiblingIndex(0);
-            var rect = Bck.GetComponent<RectTransform>();
-            rect.offsetMax = new Vector2(0, 0);
-            rect.offsetMin = new Vector2(0, 0);
-            activeBackground[0] = Bck;
+            StartCoroutine(LoadSceneWithDelay(WaterfallSceneName));
         }
-        else
+        else if (option == 1)
         {
-            //Instantiate the background an set the parent to this gameobject
-            //Then reset the scale and position
-            //Set the sibling to first so the background is visible
-            //Then adjust the rect values
-            //And lastly set the active background array position 0 to this background
-            var Bck = Instantiate(mainBackground) as GameObject;
-            Bck.transform.SetParent(this.gameObject.transform);
-            var rect = Bck.GetComponent<RectTransform>();
-            Bck.transform.SetSiblingIndex(0);
-            rect.transform.localScale = new Vector3(1, 1, 1);
-            rect.transform.localPosition = new Vector3(0, 0, 0);
-            rect.offsetMax = new Vector2(0, 0);
-            rect.offsetMin = new Vector2(0, 0);
-            activeBackground[0] = Bck;
+            Application.Quit();
+        #if UNITY_EDITOR
+            Debug.Log("Quitting Game...");
+        #endif
         }
     }
 
-    //Press enter or click on option 
-    public void pressEnter()
-    {
-        Events[option].Invoke();
-    }
-
-    //Function to go foward in the menu
-    public void moveRight()
+    void MoveRight()
     {
         if (option < options.Length - 1)
         {
-            option = option + 1;
-            ArrowR.SetBool("Click", true);
-            Audio.clip = Select;
-            Audio.Play();
+            option++;
         }
     }
 
-    //Function to go back in the menu
-    public void moveLeft()
+    void MoveLeft()
     {
         if (option > 0)
         {
-            option = option - 1;
-            ArrowL.SetBool("Click", true);
-            Audio.clip = Select;
-            Audio.Play();
+            option--;
         }
     }
 
-    //Continue
-    public void continueGame()
+    // Coroutine to handle the delayed scene load 
+    IEnumerator LoadSceneWithDelay(string sceneName)
     {
-        //In this part you need to include your save game script to implement the continue function
+        if (audioSource != null && sceneSelectClip != null)
+        {
+            audioSource.PlayOneShot(sceneSelectClip);
+            yield return new WaitForSeconds(0.5f);
+        }
+        
+        // FIX: Hide the UI by disabling the Canvas component
+        if (menuCanvas != null) menuCanvas.enabled = false; 
+
+        // Stop the current timer before loading the new scene
+        StopAllCoroutines(); 
+        
+        // No need to set GameObject.SetActive(false) anymore!
+        SceneManager.LoadScene(sceneName);
     }
 
-    //Select scene Event
-    public void selectScene()
-    {
-        Destroy(activeBackground[0]);
-        //Instantiate all the backgrounds for the scenes
-        //If using the parallax option the parallax backgrounds are spawned
-        if (useParallax)
-        {
-            for (int i = backgroundsParallax.Length - 1; i > -1; i--)
-            {
-                var bck = Instantiate(backgroundsParallax[i]) as GameObject;
-                var rect = bck.GetComponent<RectTransform>();
-                bck.transform.SetParent(backgroundsController.transform);
-                bck.transform.localScale = Vector3.one;
-                bck.transform.localPosition = Vector3.zero;
-                bck.transform.SetSiblingIndex(0);
-                var thisRect = gameObject.GetComponent<RectTransform>();
-                rect.offsetMax = new Vector2((thisRect.rect.width * i), 0);
-                rect.offsetMin = new Vector2(thisRect.rect.width * i, 0);
-                activeBackground[i] = bck;
-                menuBar.SetActive(false);
-                mainMenu = false;
-            }
-
-            //If not, we spawn the normal backgrounds
-        }
-        else
-        {
-            for (int i = backgrounds.Length - 1; i > -1; i--)
-            {
-                var bck = Instantiate(backgrounds[i]) as GameObject;
-                var rect = bck.GetComponent<RectTransform>();
-                bck.transform.SetParent(backgroundsController.transform);
-                bck.transform.localScale = Vector3.one;
-                bck.transform.localPosition = Vector3.zero;
-                bck.transform.SetSiblingIndex(0);
-                var thisRect = gameObject.GetComponent<RectTransform>();
-                rect.offsetMax = new Vector2((thisRect.rect.width * i), 0);
-                rect.offsetMin = new Vector2(thisRect.rect.width * i, 0);
-                activeBackground[i] = bck;
-                menuBar.SetActive(false);
-                mainMenu = false;
-            }
-        }
-    }
-
-    //Advances throught the Scenes
-    public void advanceScene()
-    {
-        //First check if we are animating and if we are not in the last scene
-        if (!isAnimating && activeScene < activeBackground.Length)
-        {
-            Audio.clip = SceneSelect;
-            Audio.Play();
-            //Then create a new clip and a curve to animate the scenes moving
-            var clip = new AnimationClip();
-            var curve = new AnimationCurve();
-            //Get the anim from the backgroundController to put the clip
-            var anim = backgroundsController.GetComponent<Animation>();
-            //If the clip already exist we remove it
-            if (anim.GetClip("f") != null) { anim.RemoveClip("f"); }
-            clip.legacy = true;
-            //Now we check the distance between 2 scenes to move then
-            float distance = Vector3.Distance(activeBackground[0].transform.localPosition, activeBackground[1].transform.localPosition);
-            //Set the curve with the data
-            curve = AnimationCurve.Linear(0, (backgroundsController.transform.localPosition.x), animSpeed, (distance * -1) * activeScene);
-            Debug.Log(distance * activeScene);
-            clip.SetCurve("", typeof(Transform), "localPosition.x", curve);
-            //And play the animation
-            anim.AddClip(clip, "f");
-            anim.Play("f");
-            //We also keep the count of the active scene in this variable
-            activeScene++;
-            //Now we put the active scene in the first sibling index to activate the parallax effect
-            activeBackground[activeScene - 1].transform.SetAsFirstSibling();
-
-        }
-    }
-
-    //Advances throught the Scenes
-    public void goBackScene()
-    {
-
-        //First check if we are animating and if we are not in the first scene
-        if (!isAnimating && activeScene > 1)
-        {
-            activeScene--;
-            //Then create a new clip and a curve to animate the scenes moving
-            var clip = new AnimationClip();
-            var curve = new AnimationCurve();
-            //Get the anim from the backgroundController to put the clip
-            var anim = backgroundsController.GetComponent<Animation>();
-            //If the clip already exist we remove it
-            if (anim.GetClip("b") != null) { anim.RemoveClip("b"); }
-            clip.legacy = true;
-            //Now we check the distance between 2 scenes to move then
-            float distance = Vector3.Distance(activeBackground[0].transform.localPosition, activeBackground[1].transform.localPosition);
-            //Set the curve with the data
-            curve = AnimationCurve.Linear(0, (backgroundsController.transform.localPosition.x), animSpeed, distance * (activeScene - 1) * -1);
-            Debug.Log(distance * (activeScene - 1));
-            clip.SetCurve("", typeof(Transform), "localPosition.x", curve);
-            //And play the animation
-            anim.AddClip(clip, "b");
-            anim.Play("b");
-            //We also keep the count of the active scene in this variable
-            //Now we put the active scene in the first sibling index to activate the parallax effect
-            activeBackground[activeScene].transform.SetAsLastSibling();
-        }
-    }
-
-    //Closes the scenes menu
-    public void closeScenes()
-    {
-        //Destroy all the active backgrounds and restart the menu
-        for (int i = 0; i < activeBackground.Length; i++)
-        {
-            Destroy(activeBackground[i]);
-        }
-        initiate();
-    }
-
-    // Opens the exit menu
-public void exitMenuOpen()
-{
-    // Ensure the scale is correct and the object is active before animating
-    exitMenu.transform.localScale = Vector3.one; 
-    exitMenu.SetActive(true); // Make sure it's active
-    var animEx = exitMenu.GetComponent<Animation>();
-    exitMenu.transform.SetAsLastSibling();
-    animEx.Play("Fade In");
-    mainMenu = false;
-}
-
-// Closes the exit menu (for the 'Cancel' button)
-public void exitMenuClose()
-{
-    var animEx = exitMenu.GetComponent<Animation>();
-    animEx.Play("Fade Out"); 
-    mainMenu = true; // Returns control to the main menu
+    // =======================================================
+    // --- AUTOMATION LOGIC ---
+    // =======================================================
     
-    // Get the length of the "Fade Out" clip. Use 0.5f as a safe fallback if not found.
-    float fadeOutTime = 0.5f; 
-    if (animEx.GetClip("Fade Out") != null)
+    IEnumerator AutoCycleScenes(float delay)
     {
-        fadeOutTime = animEx.GetClip("Fade Out").length;
+        // Loop forever, changing scenes after the delay
+        while (true)
+        {
+            // 1. Wait for the specified time (e.g., 5 seconds)
+            yield return new WaitForSeconds(delay); 
+
+            // 2. Load the next scene in the cycle
+            string sceneToLoad = cycleScenes[currentCycleIndex];
+
+            // 3. Load the scene (this calls LoadSceneWithDelay, which stops this coroutine)
+            yield return StartCoroutine(LoadSceneWithDelay(sceneToLoad));
+
+            // 4. Move to the next scene index, wrapping around
+            currentCycleIndex = (currentCycleIndex + 1) % cycleScenes.Length;
+        }
     }
-    
-    // Start the coroutine to deactivate the menu after the animation
-    StartCoroutine(DeactivateExitMenu(fadeOutTime)); 
 }
-
-// COROUTINE: Helper function to wait and deactivate the exit menu
-// COROUTINE: Helper function to wait and deactivate the exit menu
-IEnumerator DeactivateExitMenu(float delay)
-{
-    yield return new WaitForSeconds(delay); 
-    exitMenu.transform.localScale = Vector3.one; // Just in case!
-    exitMenu.SetActive(false); 
-}
-
-} // <--- Final closing brace for the class
