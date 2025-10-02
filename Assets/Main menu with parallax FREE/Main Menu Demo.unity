@@ -408,18 +408,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 728684882}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &340832365 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 11475804, guid: 6f40747fa9c2b6b439dfbb5d6b8ed66a,
-    type: 3}
-  m_PrefabInstance: {fileID: 728684882}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &435837259
 GameObject:
   m_ObjectHideFlags: 0
@@ -473,15 +461,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66cf5a220a69c234a8edb2617c36756e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectSceneButton: {fileID: 0}
-  rightButton: {fileID: 0}
-  rightButtonLabel: {fileID: 0}
-  firstScene: WaterfallScene
-  cycleScenes:
-  - BeachScene
-  - MountainScene
-  - ForestScene
-  cycleDelay: 5
+  menuText: {fileID: 0}
+  selectClip: {fileID: 0}
+  sceneSelectClip: {fileID: 0}
+  menuCanvas: {fileID: 0}
+  confirmationPanel: {fileID: 728684884}
 --- !u!1001 &728684882
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -497,6 +481,10 @@ PrefabInstance:
     - target: {fileID: 8239080, guid: 6f40747fa9c2b6b439dfbb5d6b8ed66a, type: 3}
       propertyPath: m_Volume
       value: 0.507
+      objectReference: {fileID: 0}
+    - target: {fileID: 8239080, guid: 6f40747fa9c2b6b439dfbb5d6b8ed66a, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11401262, guid: 6f40747fa9c2b6b439dfbb5d6b8ed66a, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -637,10 +625,10 @@ PrefabInstance:
     - target: {fileID: 11443048, guid: 6f40747fa9c2b6b439dfbb5d6b8ed66a, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 820745262}
+      objectReference: {fileID: 728684885}
     - target: {fileID: 11443048, guid: 6f40747fa9c2b6b439dfbb5d6b8ed66a, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: UIMoveRight
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 11443048, guid: 6f40747fa9c2b6b439dfbb5d6b8ed66a, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -802,6 +790,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 820745262}
+    - targetCorrespondingSourceObject: {fileID: 170332, guid: 6f40747fa9c2b6b439dfbb5d6b8ed66a,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 820745268}
     - targetCorrespondingSourceObject: {fileID: 184648, guid: 6f40747fa9c2b6b439dfbb5d6b8ed66a,
         type: 3}
       insertIndex: -1
@@ -810,6 +802,18 @@ PrefabInstance:
 --- !u!1 &728684883 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 193312, guid: 6f40747fa9c2b6b439dfbb5d6b8ed66a,
+    type: 3}
+  m_PrefabInstance: {fileID: 728684882}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &728684884 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 190734, guid: 6f40747fa9c2b6b439dfbb5d6b8ed66a,
+    type: 3}
+  m_PrefabInstance: {fileID: 728684882}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &728684885 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 170792, guid: 6f40747fa9c2b6b439dfbb5d6b8ed66a,
     type: 3}
   m_PrefabInstance: {fileID: 728684882}
   m_PrefabAsset: {fileID: 0}
@@ -1018,15 +1022,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66cf5a220a69c234a8edb2617c36756e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectSceneButton: {fileID: 0}
-  rightButton: {fileID: 340832365}
-  rightButtonLabel: {fileID: 0}
-  firstScene: WaterfallScene
-  cycleScenes:
-  - BeachScene
-  - MountainScene
-  - ForestScene
-  cycleDelay: 5
+  menuText: {fileID: 0}
+  selectClip: {fileID: 0}
+  sceneSelectClip: {fileID: 0}
+  menuCanvas: {fileID: 0}
+  confirmationPanel: {fileID: 0}
+--- !u!320 &820745268
+PlayableDirector:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 820745255}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_PlayableAsset: {fileID: 11400000, guid: e23b28b043d7248babf65bd0911a54dc, type: 2}
+  m_InitialState: 1
+  m_WrapMode: 2
+  m_DirectorUpdateMode: 1
+  m_InitialTime: 0
+  m_SceneBindings:
+  - key: {fileID: 7317783181858324464, guid: e23b28b043d7248babf65bd0911a54dc, type: 2}
+    value: {fileID: 0}
+  m_ExposedReferences:
+    m_References: []
 --- !u!1 &944396155
 GameObject:
   m_ObjectHideFlags: 0
@@ -1219,134 +1238,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 994110672}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1257638357
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1257638359}
-  - component: {fileID: 1257638358}
-  m_Layer: 0
-  m_Name: Audio Source
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!82 &1257638358
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1257638357}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 59d85831bb3904bd191b695487f82deb, type: 3}
-  m_PlayOnAwake: 1
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
---- !u!4 &1257638359
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1257638357}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.111136, y: 3.6262534, z: -10.048729}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1330931758
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1936,5 +1827,4 @@ SceneRoots:
   - {fileID: 728684882}
   - {fileID: 268782768}
   - {fileID: 1997479392}
-  - {fileID: 1257638359}
   - {fileID: 435837260}
