@@ -461,11 +461,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66cf5a220a69c234a8edb2617c36756e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  menuText: {fileID: 0}
+  menuText: {fileID: 728684886}
+  menuTMPText: {fileID: 0}
   selectClip: {fileID: 0}
   sceneSelectClip: {fileID: 0}
   menuCanvas: {fileID: 0}
   confirmationPanel: {fileID: 728684884}
+  normalColor: {r: 0.31764707, g: 0.29411766, b: 0.33333334, a: 1}
+  forestHighlightColor: {r: 0.31764707, g: 0.5882353, b: 0.20784314, a: 1}
   proceedPanelTag: ProceedToDemo
 --- !u!1001 &728684882
 PrefabInstance:
@@ -622,6 +625,10 @@ PrefabInstance:
     - target: {fileID: 11431708, guid: 6f40747fa9c2b6b439dfbb5d6b8ed66a, type: 3}
       propertyPath: m_Text
       value: Select Scene
+      objectReference: {fileID: 0}
+    - target: {fileID: 11431708, guid: 6f40747fa9c2b6b439dfbb5d6b8ed66a, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11443048, guid: 6f40747fa9c2b6b439dfbb5d6b8ed66a, type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -818,6 +825,18 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 728684882}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &728684886 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 11431708, guid: 6f40747fa9c2b6b439dfbb5d6b8ed66a,
+    type: 3}
+  m_PrefabInstance: {fileID: 728684882}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 315131332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &773322518
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1024,10 +1043,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menuText: {fileID: 0}
+  menuTMPText: {fileID: 0}
   selectClip: {fileID: 0}
   sceneSelectClip: {fileID: 0}
   menuCanvas: {fileID: 0}
   confirmationPanel: {fileID: 0}
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  forestHighlightColor: {r: 0, g: 1, b: 0, a: 1}
   proceedPanelTag: ProceedToDemo
 --- !u!320 &820745268
 PlayableDirector:
